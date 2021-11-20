@@ -17,5 +17,5 @@ POSTGRES_PASSWORD = <MY_PASSWORD>
 ### Starting the application
 
 ```
-node index.js
+npm run start:dev
 ```
