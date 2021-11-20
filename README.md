@@ -9,7 +9,8 @@ A micro service for Helsinki University Distributed Systems course
 In the project root folder, create an .env file with the following content:
 
 ```
-PORT = <MY_PORT>
+DEV_PORT = <MY_DEV_PORT>
+TEST_PORT = <MY_TEST_PORT>
 POSTGRES_USER = <MY_USER>
 POSTGRES_PASSWORD = <MY_PASSWORD>
 ```

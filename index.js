@@ -37,7 +37,7 @@ app.post('/products/:id', (request, response) => {
   }
 })
 
-const PORT = process.env.PORT
+const PORT = process.env.DEV_PORT
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
