@@ -1,0 +1,13 @@
+{
+  "name": "order",
+  "version": "1.0.0",
+  "description": "Order service",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "uid": "^2.0.0"
+  }
+}
