@@ -1,7 +1,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface.createTable('OrderItems', {
-      order_item_id: {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -34,7 +34,7 @@ module.exports = {
         onDelete: 'CASCADE',
         references: {
           model: 'Orders',
-          key: 'order_id',
+          key: 'id',
           as: 'order_id',
         },
       },
