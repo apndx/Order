@@ -10,7 +10,7 @@ module.exports = (app) => {
   app.post('/api/orders', ordersController.create);
   app.get('/api/orders', ordersController.list);
   app.get('/api/orders/:orderId', ordersController.retrieve);
-  app.put('/api/orders/:orderoId', ordersController.update);
+  app.put('/api/orders/:orderId', ordersController.update);
   app.delete('/api/orders/:orderId', ordersController.destroy);
 
   // orderItem routes

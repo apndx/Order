@@ -4,11 +4,11 @@ module.exports = {
   create(req, res) {
     return OrderItem
       .create({
-        product_id: req.body.productId,
         order_id: req.params.orderId,
-        name: req.params.name,
-        price: req.params.price,
-        amount: req.params.amount
+        product_id: req.body.productId,
+        name: req.body.name,
+        price: req.body.price,
+        amount: req.body.amount
       })
       .then(orderItem => res.status(201).send(orderItem))
       .catch(error => res.status(400).send(error));
