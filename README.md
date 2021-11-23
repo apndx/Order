@@ -16,8 +16,73 @@ POSTGRES_PASSWORD = <MY_PASSWORD>
 INVENTORY_URL = <MY_INVENTORY_URL>
 ```
 
+### Adding a PostgreSQL database with docker 
+
+Get the image:
+
+```
+docker pull postgres
+```
+
+Start the database container:
+```
+docker run \
+  -d \
+  --name order_postgres \
+  -p 5432:5432 \
+  -e POSTGRES_PASSWORD=<MY_PASSWORD> \
+  -v /home/local/<WHERE_I_WANT_MY_DATA>:/var/lib/postgresql/data \
+  postgres
+```
+
+Check the container id:
+```
+docker ps 
+```
+
+Enter the container:
+```
+docker exec -it <MY_CONTAINER_ID> bash
+```
+Authenticate to start using as postgres user, when prompted, enter the password that was used when starting the container 
+```
+psql -h localhost -p 5432 -U postgres -W
+```
+Create new role 'me':
+
+```
+CREATE ROLE me WITH LOGIN PASSWORD <MY_PASSWORD>;
+ALTER ROLE me CREATEDB;
+```
+Exit the default session
+```
+\qt
+```
+Login with the new user:
+```
+psql -d postgres -U me
+```
+Create database and connect with the user:
+```
+CREATE DATABASE order_db;
+ \c order_db
+```
+Exit
+```
+\qt
+exit
+```
+
+Before starting the application, initialize the database tables (run in the project root):
+```
+./node_modules/.bin/sequelize db:migrate
+
+```
 ### Starting the application
 
 ```
 npm run start:dev
 ```
+
+
+
