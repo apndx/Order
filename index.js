@@ -4,10 +4,9 @@ const app = express()
 
 app.use(express.json())
 
-require('./server/routes')(app);
-app.get('*', (req, res) => res.status(200).send({
-  message: 'Welcome to the Order API!',
-}));
+const orderRouter = require('./server/controllers/orders2')
+app.use('/api2/orders', orderRouter);
+
 
 const PORT = process.env.DEV_PORT
 

@@ -1,0 +1,10 @@
+{
+  "inventory": [
+    {
+      "id": 1,
+      "amount": 1,
+      "available": 1,
+      "status": "OK"
+    }
+  ]
+}
