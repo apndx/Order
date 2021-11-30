@@ -35,9 +35,15 @@ orderRouter.post('/', async (req, res) => {
         }
       })
 
-      const newItems = await OrderItem.bulkCreate(mappedItems) // Add products for order
+      await OrderItem.bulkCreate(mappedItems) // Add products for order
 
-      res.status(200).send(newItems) //TODO: add orderId and overall status to the response
+      const response = {
+        orderId: newOrder.id,
+        status: "OK",
+        products: inventoryResponse.data
+      }
+      console.log(response)
+      res.status(200).send(response)
     } else {
       res.status(400).send(inventoryResponse.data)
     }
