@@ -8,11 +8,21 @@ orderRouter.post('/', async (req, res) => {
     const orderItems = req.body // list of orderItems
     console.log(req.body)
 
-    //const INVENTORY_PATH = `${process.env.INVENTORY_URL}/api/v1/products/verify`
-    //const inventoryStatus = await axios.post(INVENTORY_PATH, orderItems)
+    const itemsToVerify = orderItems.map(item => {
+      return {
+        id: item.id,
+        amount: item.amount
+      }
+    })
+    console.log(itemsToVerify)
+    const INVENTORY_PATH = `${process.env.INVENTORY_URL}/api/v1/products/verify`
+    console.log('Checking inventory', INVENTORY_PATH)
+    const inventoryResponse = await axios.post(INVENTORY_PATH, itemsToVerify)
 
-    //console.log(inventoryStatus)
-    //if (inventoryStatus.status === 'OK') {
+    const isStockTooLow = inventoryResponse.data.filter(item => item.status !== 'OK').length > 0
+    console.log(inventoryResponse.data)
+
+    if (!isStockTooLow) {
       const newOrder =  await Order.create({}) // Create order
 
       const mappedItems = orderItems.map(item => {
@@ -28,11 +38,13 @@ orderRouter.post('/', async (req, res) => {
       const newItems = await OrderItem.bulkCreate(mappedItems) // Add products for order
 
       res.status(200).send(newItems) //TODO: add orderId and overall status to the response
-    //} else {
-    //  res.status(400).send(inventoryStatus)
-    //}
+    } else {
+      res.status(400).send(inventoryResponse.data)
+    }
   } catch (exception) {
     console.log(exception.message)
+
+    
     res.status(400).json({ error: 'malformatted json' })
   }
 
