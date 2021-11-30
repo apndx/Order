@@ -22,6 +22,11 @@ if (process.env.NODE_ENV === 'development') {
   port = process.env.DEV_PORT
 }
 
+if (process.env.NODE_ENV === 'composed') {
+  sequelizeConfig = composed
+  port = process.env.DEV_PORT
+}
+
 module.exports = {
   sequelizeConfig,
   port

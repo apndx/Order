@@ -8,7 +8,9 @@ orderRouter.post('/', async (req, res) => {
     const orderItems = req.body // list of orderItems
     console.log(req.body)
 
-    //const inventoryStatus = await axios.post(process.env.INVENTORY_URL, orderItems)
+    //const INVENTORY_PATH = `${process.env.INVENTORY_URL}/api/v1/products/verify`
+    //const inventoryStatus = await axios.post(INVENTORY_PATH, orderItems)
+
     //console.log(inventoryStatus)
     //if (inventoryStatus.status === 'OK') {
       const newOrder =  await Order.create({}) // Create order

@@ -9,8 +9,15 @@ COPY package.json /app
 RUN npm install
 COPY . /app
 
-# Launch application
-CMD node index.js
+# Add envs
+ENV NODE_ENV=composed
+ENV ORDER_POSTGRES_HOST 172.17.0.3
+ENV INVENTORY_URL inventory:9000 
+ENV POSTGRES_USER orderuser
+ENV POSTGRES_PASSWORD password123
 
-# Expose container's port 3000 to the outside
-EXPOSE 3000
+# Expose container's port 3001 to the outside
+EXPOSE 3001
+
+# Run scripts
+ENTRYPOINT ["./entrypoint.sh"]
