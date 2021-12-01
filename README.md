@@ -1,9 +1,21 @@
 # Order
-A micro service for Helsinki University Distributed Systems course
 
-## Usage
+This is a micro service for Helsinki University Distributed Systems course
 
+## Using Order service as a part of a distributed Online Store system
 
+The application setup is done using docker-compose.
+
+First build a docker image of the Order service from the project root:
+
+```
+docker build -t order:latest .
+
+```
+
+Next build the images of the other services of the system, and run the system from the docker-compose project. The links and the instructions are in the [docker-compose repository readme](https://github.com/sokkanen/ds_docker-compose).
+
+## Using application locally with a PostreSQL database with Docker
 ### Configuration
 
 In the project root folder, create an .env file with the following content:
@@ -16,7 +28,7 @@ POSTGRES_PASSWORD = <MY_PASSWORD>
 INVENTORY_URL = <MY_INVENTORY_URL>
 ```
 
-### Adding a PostgreSQL database with docker 
+### Adding a PostgreSQL database with Docker 
 
 Get the image:
 
@@ -83,6 +95,3 @@ Before starting the application, initialize the database tables (run in the proj
 ```
 npm run start:dev
 ```
-
-
-
