@@ -5,8 +5,12 @@ const axios = require('axios')
 
 orderRouter.post('/', async (req, res) => {
   try {
-    const orderItems = req.body // list of orderItems
-    console.log(req.body)
+
+    const orderItems = req.body.products || [] // list of orderItems
+    console.log('Received order for', orderItems)
+    if (orderItems.lenght === 0) {
+      res.status(400).json({ error: 'An order must have at least one product' })
+    }
 
     const itemsToVerify = orderItems.map(item => {
       return {
@@ -14,17 +18,20 @@ orderRouter.post('/', async (req, res) => {
         amount: item.amount
       }
     })
+    console.log('Starting verifying an order for products:')
     console.log(itemsToVerify)
     const INVENTORY_PATH = `${process.env.INVENTORY_URL}/api/v1/products/verify`
     console.log('Checking inventory', INVENTORY_PATH)
     const inventoryResponse = await axios.post(INVENTORY_PATH, itemsToVerify)
 
     const isStockTooLow = inventoryResponse.data.filter(item => item.status !== 'OK').length > 0
-    console.log(inventoryResponse.data)
+    console.log('Inventory response:', inventoryResponse.data)
 
     if (!isStockTooLow) {
-      const newOrder =  await Order.create({}) // Create order
+      console.log('Creating an order')
 
+      const newOrder =  await Order.create({}) // Create order
+      
       const mappedItems = orderItems.map(item => {
         return {
           order_id: newOrder.id,
@@ -42,7 +49,8 @@ orderRouter.post('/', async (req, res) => {
         status: "OK",
         products: inventoryResponse.data
       }
-      console.log(response)
+      console.log('Confirming order:', response)
+
       res.status(200).send(response)
     } else {
       res.status(400).send(inventoryResponse.data)
@@ -50,8 +58,7 @@ orderRouter.post('/', async (req, res) => {
   } catch (exception) {
     console.log(exception.message)
 
-    
-    res.status(400).json({ error: 'malformatted json' })
+    res.status(400).json({ error: 'Malformatted json' })
   }
 
 })
