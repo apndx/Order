@@ -18,18 +18,18 @@ orderRouter.post('/', async (req, res) => {
         amount: item.amount
       }
     })
-    console.log('Starting verifying an order for products:')
-    console.log(itemsToVerify)
-    const INVENTORY_PATH = `${process.env.INVENTORY_URL}/api/v1/products/verify`
-    console.log('Checking inventory', INVENTORY_PATH)
-    const inventoryResponse = await axios.post(INVENTORY_PATH, itemsToVerify)
-
-    const isStockTooLow = inventoryResponse.data.filter(item => item.status !== 'OK').length > 0
+    console.log('Starting verifying an order for products:', itemsToVerify)
+    const INVENTORY_VERIFY_PATH = `${process.env.INVENTORY_URL}/api/v1/products/verify`
+    const inventoryResponse = await axios.post(INVENTORY_VERIFY_PATH, itemsToVerify)
     console.log('Inventory response:', inventoryResponse.data)
 
+    const isStockTooLow = inventoryResponse.data.filter(item => item.status !== 'OK').length > 0
     if (!isStockTooLow) {
+      console.log('Inventory ok, reducing oredered products')
+      const INVENTORY_ORDER_PATH = `${process.env.INVENTORY_URL}/api/v1/products/order`
+      const inventoryReductionResponse = await axios.post(INVENTORY_ORDER_PATH, itemsToVerify)
+      console.log('Inventory response:',inventoryReductionResponse.data)
       console.log('Creating an order')
-
       const newOrder =  await Order.create({}) // Create order
       
       const mappedItems = orderItems.map(item => {
@@ -53,7 +53,12 @@ orderRouter.post('/', async (req, res) => {
 
       res.status(200).send(response)
     } else {
-      res.status(400).send(inventoryResponse.data)
+      console.log('Not enough stock, please adjust the order')
+      const response = {
+        status: "NOT_OK",
+        products: inventoryResponse.data
+      }
+      res.status(400).send(response)
     }
   } catch (exception) {
     console.log(exception.message)
