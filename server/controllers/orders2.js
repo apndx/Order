@@ -4,6 +4,7 @@ const OrderItem = require('../models').OrderItem;
 const axios = require('axios')
 
 orderRouter.post('/', async (req, res) => {
+  // Verifies an order from inventory, reduces ordered products from inventory, saves the order to order database
   try {
 
     const orderItems = req.body.products || [] // list of orderItems
@@ -74,6 +75,23 @@ orderRouter.post('/', async (req, res) => {
     return res.status(400).json({ error: 'Something went wrong..' })
   }
 
+})
+
+orderRouter.get('/', (req, res) => {
+  // Lists all orders
+  return Order
+  .findAll({
+    include: [{
+      model: OrderItem,
+      as: 'orderItems',
+    }],
+    order: [
+      ['createdAt', 'DESC'],
+      [{ model: OrderItem, as: 'orderItems' }, 'createdAt', 'ASC'],
+    ],
+  })
+  .then((orders) => res.status(200).send(orders))
+  .catch((error) => res.status(400).send(error));
 })
 
 module.exports = orderRouter
