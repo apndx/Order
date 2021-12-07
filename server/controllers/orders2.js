@@ -8,10 +8,10 @@ orderRouter.post('/', async (req, res) => {
 
     const orderItems = req.body.products || [] // list of orderItems
     console.log('Received order for', orderItems)
-    if (orderItems.lenght === 0) {
-      res.status(400).json({ error: 'An order must have at least one product' })
-    }
 
+    if (orderItems.length === 0) {
+      return res.status(400).json({ error: 'An order must have at least one product' })
+    }
     const itemsToVerify = orderItems.map(item => {
       return {
         id: item.id,
@@ -23,15 +23,22 @@ orderRouter.post('/', async (req, res) => {
     const inventoryResponse = await axios.post(INVENTORY_VERIFY_PATH, itemsToVerify)
     console.log('Inventory response:', inventoryResponse.data)
 
+    const hasUnknownItems = inventoryResponse.data.filter(item => item.status === 'UNKNOWN_ITEM').length > 0
+
+    if (hasUnknownItems) {
+      return res.status(400).json({ error: 'The order has unknown items, please check the order' })
+    }
+
     const isStockTooLow = inventoryResponse.data.filter(item => item.status !== 'OK').length > 0
+
     if (!isStockTooLow) {
-      console.log('Inventory ok, reducing oredered products')
+      console.log('Inventory ok, reducing ordered products')
       const INVENTORY_ORDER_PATH = `${process.env.INVENTORY_URL}/api/v1/products/order`
       const inventoryReductionResponse = await axios.post(INVENTORY_ORDER_PATH, itemsToVerify)
-      console.log('Inventory response:',inventoryReductionResponse.data)
+      console.log('Inventory response:', inventoryReductionResponse.data)
       console.log('Creating an order')
-      const newOrder =  await Order.create({}) // Create order
-      
+      const newOrder = await Order.create({}) // Create order
+
       const mappedItems = orderItems.map(item => {
         return {
           order_id: newOrder.id,
@@ -51,19 +58,20 @@ orderRouter.post('/', async (req, res) => {
       }
       console.log('Confirming order:', response)
 
-      res.status(200).send(response)
+      return res.status(200).send(response)
     } else {
       console.log('Not enough stock, please adjust the order')
       const response = {
         status: "NOT_OK",
         products: inventoryResponse.data
       }
-      res.status(400).send(response)
+      return res.status(200).send(response)
     }
+
   } catch (exception) {
     console.log(exception.message)
 
-    res.status(400).json({ error: 'Malformatted json' })
+    return res.status(400).json({ error: 'Something went wrong..' })
   }
 
 })
