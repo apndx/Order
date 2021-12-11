@@ -55,7 +55,7 @@ orderRouter.post('/', async (req, res) => {
       const response = {
         orderId: newOrder.id,
         status: "OK",
-        products: inventoryResponse.data
+        products: inventoryReductionResponse.data
       }
       console.log('Confirming order:', response)
 
