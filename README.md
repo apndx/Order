@@ -15,6 +15,25 @@ docker build -t order:latest .
 
 Next build the images of the other services of the system, and run the system from the docker-compose project. The links and the instructions are in the [docker-compose repository readme](https://github.com/sokkanen/ds_docker-compose).
 
+## API endpoints
+
+**Make an order:**
+
+```
+POST /api/orders
+```
+This endpoint will expect ordered products to be specified in request body as a list:
+
+```
+{ products: [{ id: number, name: string, amount: number, price: number }] }
+```
+
+**List all orders:**
+
+```
+GET /api/orders
+```
+
 ## Using application locally with a PostreSQL database with Docker
 ### Configuration
 
