@@ -10,7 +10,6 @@ First build a docker image of the Order service from the project root:
 
 ```
 docker build -t order:latest .
-
 ```
 
 Next build the images of the other services of the system, and run the system from the docker-compose project. The links and the instructions are in the [docker-compose repository readme](https://github.com/sokkanen/ds_docker-compose).
@@ -107,7 +106,6 @@ exit
 Before starting the application, initialize the database tables (run in the project root):
 ```
 ./node_modules/.bin/sequelize db:migrate
-
 ```
 ### Starting the application
 
