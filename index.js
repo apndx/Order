@@ -4,9 +4,8 @@ const app = express()
 
 app.use(express.json())
 
-const orderRouter = require('./server/controllers/orders2')
+const orderRouter = require('./server/controllers/orders')
 app.use('/api/orders', orderRouter);
-
 
 const PORT = process.env.DEV_PORT
 
